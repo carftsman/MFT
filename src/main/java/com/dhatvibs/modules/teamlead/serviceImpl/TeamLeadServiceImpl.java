@@ -31,14 +31,22 @@ public class TeamLeadServiceImpl implements TeamLeadService {
             throw new RuntimeException("Executive ID already exists");
         }
 
+		/*
+		 * User executive = User.builder() .userCode(request.getExecutiveCode())
+		 * .name(request.getName()) .phone(request.getPhone()) .role(Role.EXECUTIVE)
+		 * .isActivated(false) .isActive(true) .build();
+		 */
         User executive = User.builder()
                 .userCode(request.getExecutiveCode())
                 .name(request.getName())
                 .phone(request.getPhone())
                 .role(Role.EXECUTIVE)
+                .teamleadId(teamLead.getId())   // ✅ IMPORTANT LINE
+               
                 .isActivated(false)
                 .isActive(true)
                 .build();
+
 
         userRepository.save(executive);
 
