@@ -1,8 +1,11 @@
 package com.dhatvibs.modules.teamlead.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.dhatvibs.modules.form.dto.FormResponseDto;
 import com.dhatvibs.modules.teamlead.dto.*;
 import com.dhatvibs.modules.teamlead.service.TeamLeadService;
 
@@ -28,5 +31,11 @@ public class TeamLeadController {
         }
 
         return teamLeadService.createExecutive(request, teamLeadCode);
+    }
+    
+    @GetMapping("/forms")
+    public List<FormResponseDto> getMyExecutivesForms(HttpSession session) {
+
+        return teamLeadService.getMyExecutivesForms(session);
     }
 }

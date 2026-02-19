@@ -14,4 +14,7 @@ public interface FormRepository extends JpaRepository<Form, Long> {
     List<Form> findByExecutiveId(Long executiveId);
 
     List<Form> findByTagNot(FormTag tag);   // For BPO loop (exclude GREEN)
+    
+    List<Form> findByTeamleadId(Long teamleadId);
+
 }

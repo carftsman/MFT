@@ -27,6 +27,7 @@ public class Form {
     private String vendorName;
     private String contactNumber;
     private String mailId;
+    private String vendorLocation;  //added
     private String doorNumber;
     private String streetName;
     private String areaName;

@@ -20,8 +20,12 @@ public class FormResponseDto {
     private String vendorShopName;
     private String vendorName;
     private String contactNumber;
+    private String vendorLocation;  //added
     private String mailId;
-    private String areaName;
+    private String doorNumber;  //added
+    private String streetName;  //added
+    private String areaName;   
+    private String pinCode;     //added
     private String state;
 
     private FormTag tag;

@@ -137,6 +137,7 @@ public class FormServiceImpl implements FormService {
                 .vendorName(requestDto.getVendorName())
                 .contactNumber(requestDto.getContactNumber())
                 .mailId(requestDto.getMailId())
+                .vendorLocation(requestDto.getVendorLocation())  //added
                 .doorNumber(requestDto.getDoorNumber())
                 .streetName(requestDto.getStreetName())
                 .areaName(requestDto.getAreaName())
@@ -175,7 +176,11 @@ public class FormServiceImpl implements FormService {
                 .vendorName(form.getVendorName())
                 .contactNumber(form.getContactNumber())
                 .mailId(form.getMailId())
+                .vendorLocation(form.getVendorLocation())
+                .doorNumber(form.getDoorNumber())  //added
+                .streetName(form.getStreetName()) //added
                 .areaName(form.getAreaName())
+                .pinCode(form.getPinCode())      //added
                 .state(form.getState())
 
                 .tag(form.getTag())
