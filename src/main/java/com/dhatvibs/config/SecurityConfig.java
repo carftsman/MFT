@@ -25,7 +25,7 @@ public class SecurityConfig {
 	 * 
 	 * return http.build(); }
 	 */
-	
+
 	/*
 	 * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
 	 * Exception {
@@ -38,26 +38,33 @@ public class SecurityConfig {
 	 * 
 	 * return http.build(); }
 	 */
+
 	
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	  @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
+	  Exception {
+	  
+	  http .csrf(csrf -> csrf.disable()) .authorizeHttpRequests(auth -> auth
+	  .requestMatchers("/**").permitAll() ) .sessionManagement(session -> session
+	  .maximumSessions(1) );
+	  
+	  return http.build(); }
+	  
+	  
+	  
+	  @Bean public PasswordEncoder passwordEncoder() { return new
+	  BCryptPasswordEncoder(); }
+	 
 
-	    http
-	        .csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/**").permitAll()
-	        )
-	        .sessionManagement(session -> session
-	            .maximumSessions(1)
-	        );
-
-	    return http.build();
-	}
-
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	/*
+	 * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
+	 * Exception {
+	 * 
+	 * http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->
+	 * auth.anyRequest().permitAll());
+	 * 
+	 * return http.build(); }
+	 * 
+	 * @Bean public PasswordEncoder passwordEncoder() { return new
+	 * BCryptPasswordEncoder(); }
+	 */
 }
