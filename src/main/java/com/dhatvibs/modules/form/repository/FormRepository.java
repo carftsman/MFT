@@ -1,13 +1,12 @@
 
   package com.dhatvibs.modules.form.repository;
   
-  import java.util.List;
-  
-  import org.springframework.data.jpa.repository.JpaRepository; 
-  import org.springframework.stereotype.Repository;
-  
-  import com.dhatvibs.modules.form.entity.Form;
-  import com.dhatvibs.modules.form.entity.FormTag;
+import java.util.List;  
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;  
+import com.dhatvibs.modules.form.entity.Form;
+import com.dhatvibs.modules.form.entity.FormTag;
   
   @Repository 
   public interface FormRepository extends JpaRepository<Form, Long>
@@ -19,6 +18,20 @@
   
   List<Form> findByTeamleadId(Long teamleadId);
   
+  
+//Get available form for BPO dashboard
+ @Query("""
+   SELECT f FROM Form f
+   WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
+   AND (
+           f.assignedBpoId IS NULL
+        OR (f.solved = false AND f.reappearDate <= CURRENT_TIMESTAMP)
+       )
+   ORDER BY f.createdAt ASC
+""")
+List<Form> findAvailableFormsForBpo();
+
+ 
   }
    
 

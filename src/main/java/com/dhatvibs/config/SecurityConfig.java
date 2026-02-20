@@ -10,61 +10,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SecurityConfig {
-
-	/*
-	 * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
-	 * Exception {
-	 * 
-	 * http .csrf(csrf -> csrf.disable()) // ✅ Correct way
-	 * .authorizeHttpRequests(auth -> auth
-	 * .requestMatchers("/api/auth/**").permitAll()
-	 * .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
-	 * "/swagger-ui.html").permitAll() .anyRequest().authenticated() )
-	 * .sessionManagement(session -> session.maximumSessions(1) ) .formLogin(form ->
-	 * form.disable()) .httpBasic(basic -> basic.disable());
-	 * 
-	 * return http.build(); }
-	 */
-
-	/*
-	 * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
-	 * Exception {
-	 * 
-	 * http .csrf(csrf -> csrf.disable()) .authorizeHttpRequests(auth -> auth
-	 * .requestMatchers("/api/auth/**").permitAll()
-	 * .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-	 * .anyRequest().authenticated() ) .sessionManagement(session -> session
-	 * .maximumSessions(1) );
-	 * 
-	 * return http.build(); }
-	 */
-
 	
 	  @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
-	  Exception {
+	  Exception 
+	  {
 	  
 	  http .csrf(csrf -> csrf.disable()) .authorizeHttpRequests(auth -> auth
 	  .requestMatchers("/**").permitAll() ) .sessionManagement(session -> session
 	  .maximumSessions(1) );
 	  
-	  return http.build(); }
-	  
-	  
+	  return http.build(); 
+	  }
 	  
 	  @Bean public PasswordEncoder passwordEncoder() { return new
 	  BCryptPasswordEncoder(); }
 	 
 
-	/*
-	 * @Bean public SecurityFilterChain filterChain(HttpSecurity http) throws
-	 * Exception {
-	 * 
-	 * http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->
-	 * auth.anyRequest().permitAll());
-	 * 
-	 * return http.build(); }
-	 * 
-	 * @Bean public PasswordEncoder passwordEncoder() { return new
-	 * BCryptPasswordEncoder(); }
-	 */
+
 }

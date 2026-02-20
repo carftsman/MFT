@@ -55,6 +55,19 @@
 	  this.updatedAt = LocalDateTime.now(); 
 	  }
   
+//BPO Assignment
+private Long assignedBpoId;
+private String assignedBpoName;
+
+//BPO Action
+private Boolean solved;  // true = solved, false = not solved
+
+private String executiveReview;
+private String vendorReview;
+
+private LocalDateTime bpoActionDate;
+private LocalDateTime reappearDate;
+
  
   
   }
