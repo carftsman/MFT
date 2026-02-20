@@ -87,6 +87,7 @@ public class BpoServiceImpl implements BpoService {
         /*form.setReview(dto.getReview()); */
         form.setExecutiveReview(dto.getExecutiveReview());
         form.setVendorReview(dto.getVendorReview());
+       
         form.setBpoActionDate(LocalDateTime.now());
 
         // ---------------- SOLVED ----------------
