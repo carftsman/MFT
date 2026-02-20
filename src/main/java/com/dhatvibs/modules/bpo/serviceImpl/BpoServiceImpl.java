@@ -38,7 +38,8 @@ public class BpoServiceImpl implements BpoService {
             throw new RuntimeException("Unauthorized - Session expired");
         }
 
-        List<Form> forms = formRepository.findAvailableFormsForBpo();
+        //List<Form> forms = formRepository.findAvailableFormsForBpo();
+        List<Form> forms = formRepository.findAvailableFormsForBpo(bpoId);
 
         // Assign first available unassigned form
         for (Form form : forms) {
