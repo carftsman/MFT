@@ -18,6 +18,8 @@ import com.dhatvibs.modules.form.entity.FormTag;
   
   List<Form> findByTeamleadId(Long teamleadId);
   
+  List<Form> findByBpoActionDateIsNotNull();  //added
+  
   
 //Get available form for BPO dashboard
 	/*

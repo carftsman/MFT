@@ -20,7 +20,8 @@ public class DataServiceImpl implements DataService {
     @Override
     public List<DataResponseDto> getAllFormData() {
 
-        return formRepository.findAll()
+       // return formRepository.findAll()
+    	return formRepository.findByBpoActionDateIsNotNull()
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
