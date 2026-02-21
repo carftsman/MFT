@@ -33,5 +33,6 @@ public class User {
     private Boolean isActive = true;
     
     private Long teamleadId;
+    private Long managerId;
 
 }
