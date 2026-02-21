@@ -12,4 +12,7 @@ public interface FormService {
     FormResponseDto createForm(FormRequestDto requestDto, HttpSession session);
 
     List<FormResponseDto> getAllForms();
+    
+    
+    List<FormResponseDto> getMyForms(HttpSession session);
 }

@@ -40,9 +40,9 @@ public class FormServiceImpl implements FormService {
 
         switch (requestDto.getStatus()) {
 
-            case ONBOARDED:
-                tag = FormTag.GREEN;
-                break;
+          //  case ONBOARDED:
+            //    tag = FormTag.GREEN;
+              //  break;
 
             case INTERESTED:
                 tag = FormTag.ORANGE;
@@ -66,7 +66,10 @@ public class FormServiceImpl implements FormService {
                 .vendorName(requestDto.getVendorName())
                 .contactNumber(requestDto.getContactNumber())
                 .mailId(requestDto.getMailId())
+                .vendorType(requestDto.getVendorType())          //added
                 .vendorLocation(requestDto.getVendorLocation())  //added
+                .latitude(requestDto.getLatitude())              //added
+                .longitude(requestDto.getLongitude())            //added
                 .doorNumber(requestDto.getDoorNumber())
                 .streetName(requestDto.getStreetName())
                 .areaName(requestDto.getAreaName())
@@ -90,6 +93,12 @@ public class FormServiceImpl implements FormService {
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
+    
+    
+    
+    
+    
+    
 
     private FormResponseDto mapToDto(Form form) {
         return FormResponseDto.builder()
@@ -105,7 +114,10 @@ public class FormServiceImpl implements FormService {
                 .vendorName(form.getVendorName())
                 .contactNumber(form.getContactNumber())
                 .mailId(form.getMailId())
+                .vendorType(form.getVendorType())  //added
                 .vendorLocation(form.getVendorLocation())
+                .latitude(form.getLatitude())      //added
+                .longitude(form.getLongitude())    //added
                 .doorNumber(form.getDoorNumber())  //added
                 .streetName(form.getStreetName()) //added
                 .areaName(form.getAreaName())
@@ -118,6 +130,22 @@ public class FormServiceImpl implements FormService {
 
                 .createdAt(form.getCreatedAt())
                 .build();
+    }
+    
+    
+    @Override
+    public List<FormResponseDto> getMyForms(HttpSession session) {
+
+        Long executiveId = (Long) session.getAttribute("userId");
+
+        if (executiveId == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        return formRepository.findByExecutiveId(executiveId)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 }
 

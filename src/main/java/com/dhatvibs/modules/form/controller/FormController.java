@@ -3,6 +3,7 @@ package com.dhatvibs.modules.form.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.dhatvibs.modules.form.dto.FormRequestDto;
@@ -31,5 +32,10 @@ public class FormController {
     @GetMapping
     public List<FormResponseDto> getAllForms() {
         return formService.getAllForms();
+    }   
+    
+    @GetMapping("/my-history")
+    public ResponseEntity<List<FormResponseDto>> getMyHistory(HttpSession session) {
+        return ResponseEntity.ok(formService.getMyForms(session));
     }
-}
+} 

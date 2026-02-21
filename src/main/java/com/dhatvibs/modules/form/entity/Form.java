@@ -24,7 +24,11 @@
   private String vendorName;
   private String contactNumber; 
   private String mailId;
+  @Enumerated(EnumType.STRING)
+  private VendorType vendorType; //added
   private String vendorLocation; //added
+  private Double latitude;       //added
+  private Double longitude;      //added
   private String doorNumber; 
   private String streetName; 
   private String areaName; 
