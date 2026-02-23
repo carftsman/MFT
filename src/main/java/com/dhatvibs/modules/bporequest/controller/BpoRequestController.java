@@ -1,6 +1,7 @@
 package com.dhatvibs.modules.bporequest.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,10 @@ public class BpoRequestController {
     @Autowired
     private BpoRequestService service;
 
-    @GetMapping("/history")
-    public List<FormResponseDto> getHistory(HttpSession session) {
-        return service.getBpoHistory(session);
-    }
+	/*
+	 * @GetMapping("/history") public List<FormResponseDto> getHistory(HttpSession
+	 * session) { return service.getBpoHistory(session); }
+	 */
 
     @PutMapping("/request/{formId}")
     public FormResponseDto requestCorrection(
@@ -55,5 +56,22 @@ public class BpoRequestController {
             HttpSession session) {
 
         return service.modifyAndResubmit(formId, dto, session);
+    }  
+    @GetMapping("/my-request-count")
+    public Long myRequestCount(HttpSession session) {
+        return service.getMyRequestCount(session);
+    }
+
+    @GetMapping("/my-approval-stats")
+    public Map<String, Long> myApprovalStats(HttpSession session) {
+        return service.getMyApprovalStats(session);
+    }  
+    @GetMapping("/history")
+    public List<FormResponseDto> getBpoHistory(HttpSession session) {
+        return service.getBpoHistory(session);
+    } 
+    @GetMapping("/reopened")
+    public List<FormResponseDto> getReopenedForms(HttpSession session) {
+        return service.getReopenedForms(session);
     }
 }

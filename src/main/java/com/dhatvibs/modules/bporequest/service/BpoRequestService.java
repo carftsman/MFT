@@ -1,6 +1,7 @@
 package com.dhatvibs.modules.bporequest.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.dhatvibs.modules.bporequest.dto.BpoModifyDto;
 import com.dhatvibs.modules.bporequest.dto.CorrectionRequestDto;
@@ -25,5 +26,11 @@ public interface BpoRequestService {
 
     FormResponseDto modifyAndResubmit(Long formId,
                                       BpoModifyDto dto,
-                                      HttpSession session);
+                                      HttpSession session); 
+    
+    Long getMyRequestCount(HttpSession session);
+
+    Map<String, Long> getMyApprovalStats(HttpSession session);  
+    
+    List<FormResponseDto> getReopenedForms(HttpSession session);
 }

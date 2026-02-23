@@ -1,7 +1,9 @@
 package com.dhatvibs.modules.bporequest.serviceImpl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import com.dhatvibs.modules.bporequest.dto.ManagerApprovalDto;
 import com.dhatvibs.modules.bporequest.service.BpoRequestService;
 import com.dhatvibs.modules.form.dto.FormResponseDto;
 import com.dhatvibs.modules.form.entity.Form;
+import com.dhatvibs.modules.form.entity.FormTag;
 import com.dhatvibs.modules.form.entity.WorkflowStatus;
 import com.dhatvibs.modules.form.repository.FormRepository;
 
@@ -23,129 +26,248 @@ import jakarta.servlet.http.HttpSession;
 @Transactional
 public class BpoRequestServiceImpl implements BpoRequestService {
 
-    @Autowired
-    private FormRepository formRepository;
+	@Autowired
+	private FormRepository formRepository;
 
-    // 1️⃣ BPO HISTORY
-    @Override
-    public List<FormResponseDto> getBpoHistory(HttpSession session) {
+	// 1️⃣ BPO HISTORY
+	/*
+	 * @Override public List<FormResponseDto> getBpoHistory(HttpSession session) {
+	 * 
+	 * Long bpoId = (Long) session.getAttribute("userId");
+	 * 
+	 * return formRepository.findAll().stream() .filter(f ->
+	 * bpoId.equals(f.getAssignedBpoId()) && f.getBpoActionDate() !=
+	 * null).map(this::mapToDto) .collect(Collectors.toList()); }
+	 */ 
+	@Override
+	public List<FormResponseDto> getBpoHistory(HttpSession session) {
 
-        Long bpoId = (Long) session.getAttribute("userId");
+	    Long bpoId = (Long) session.getAttribute("userId");
 
-        return formRepository.findAll()
-                .stream()
-                .filter(f -> bpoId.equals(f.getAssignedBpoId())
-                        && f.getBpoActionDate() != null)
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
-    }
+	    if (bpoId == null) {
+	        throw new RuntimeException("Unauthorized - Login Required");
+	    }
 
-    // 2️⃣ REQUEST CORRECTION
-    @Override
-    public FormResponseDto requestCorrection(Long formId,
-                                             CorrectionRequestDto dto,
-                                             HttpSession session) {
+	    List<Form> forms =
+	            formRepository.findByAssignedBpoIdAndBpoActionDateIsNotNull(bpoId);
 
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new RuntimeException("Form not found"));
+	    return forms.stream()
+	            .map(this::mapToDto)
+	            .collect(Collectors.toList());
+	}
 
-        form.setResendRequested(true);
-        form.setResendReason(dto.getReason());
-        form.setWorkflowStatus(WorkflowStatus.CORRECTION_REQUESTED);
+	// 2️⃣ REQUEST CORRECTION
+	@Override
+	public FormResponseDto requestCorrection(Long formId, CorrectionRequestDto dto, HttpSession session) {
 
-        return mapToDto(formRepository.save(form));
-    }
+		Form form = formRepository.findById(formId).orElseThrow(() -> new RuntimeException("Form not found"));
 
-    // 3️⃣ MANAGER VIEW REQUESTS
-    @Override
-    public List<FormResponseDto> getManagerCorrectionRequests(HttpSession session) {
+		form.setResendRequested(true);
+		form.setBpoReason(dto.getBpoReason());
+		form.setWorkflowStatus(WorkflowStatus.CORRECTION_REQUESTED);
 
-        return formRepository.findAll()
-                .stream()
-                .filter(f -> WorkflowStatus.CORRECTION_REQUESTED
-                        .equals(f.getWorkflowStatus()))
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
-    }
+		return mapToDto(formRepository.save(form));
+	}
 
-    // 4️⃣ MANAGER APPROVE / REJECT
-    @Override
-    public FormResponseDto approveCorrection(Long formId,
-                                             ManagerApprovalDto dto,
-                                             HttpSession session) {
+	// 3️⃣ MANAGER VIEW REQUESTS
+	@Override
+	public List<FormResponseDto> getManagerCorrectionRequests(HttpSession session) {
 
-        Long managerId = (Long) session.getAttribute("userId");
-        String managerName = (String) session.getAttribute("userName");
+		return formRepository.findAll().stream()
+				.filter(f -> WorkflowStatus.CORRECTION_REQUESTED.equals(f.getWorkflowStatus())).map(this::mapToDto)
+				.collect(Collectors.toList());
+	}
 
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new RuntimeException("Form not found"));
+	// 4️⃣ MANAGER APPROVE / REJECT
+	@Override
+	public FormResponseDto approveCorrection(Long formId, ManagerApprovalDto dto, HttpSession session) {
 
-        if (dto.getApproved()) {
+		Long managerId = (Long) session.getAttribute("userId");
+		String managerName = (String) session.getAttribute("userName");
 
-            form.setResendApproved(true);
-            form.setWorkflowStatus(WorkflowStatus.REOPENED);
-            form.setManagerId(managerId);
-            form.setManagerName(managerName);
-            form.setResendApprovedDate(LocalDateTime.now());
+		Form form = formRepository.findById(formId).orElseThrow(() -> new RuntimeException("Form not found"));
 
-        } else {
+		if (dto.getApproved()) {
 
-            form.setResendRequested(false);
-            form.setWorkflowStatus(WorkflowStatus.BPO_VERIFIED);
-        }
+			form.setResendApproved(true);
+			form.setWorkflowStatus(WorkflowStatus.REOPENED);
+			form.setManagerId(managerId);
+			form.setManagerName(managerName);
+			form.setResendApprovedDate(LocalDateTime.now());
 
-        return mapToDto(formRepository.save(form));
-    }
+		} else {
 
-    // 5️⃣ BPO MODIFY & RESUBMIT
-    @Override
-    public FormResponseDto modifyAndResubmit(Long formId,
-                                             BpoModifyDto dto,
-                                             HttpSession session) {
+			form.setResendRequested(false);
+			form.setWorkflowStatus(WorkflowStatus.BPO_VERIFIED);
+		}
 
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new RuntimeException("Form not found"));
+		return mapToDto(formRepository.save(form));
+	}
 
-        if (!WorkflowStatus.REOPENED.equals(form.getWorkflowStatus())) {
-            throw new RuntimeException("Form is not editable");
-        }
+	// 5️⃣ BPO MODIFY & RESUBMIT
+	/*
+	 * @Override public FormResponseDto modifyAndResubmit(Long formId, BpoModifyDto
+	 * dto, HttpSession session) {
+	 * 
+	 * Form form = formRepository.findById(formId) .orElseThrow(() -> new
+	 * RuntimeException("Form not found"));
+	 * 
+	 * if (!WorkflowStatus.REOPENED.equals(form.getWorkflowStatus())) { throw new
+	 * RuntimeException("Form is not editable"); }
+	 * 
+	 * // Replace old data
+	 * 
+	 * form.setVendorShopName(dto.getVendorShopName());
+	 * form.setVendorName(dto.getVendorName());
+	 * form.setContactNumber(dto.getContactNumber());
+	 * form.setMailId(dto.getMailId());
+	 * form.setVendorLocation(dto.getVendorLocation());
+	 * form.setDoorNumber(dto.getDoorNumber());
+	 * form.setStreetName(dto.getStreetName()); form.setAreaName(dto.getAreaName());
+	 * form.setPinCode(dto.getPinCode()); form.setState(dto.getState());
+	 * 
+	 * form.setAction(dto.getAction()); form.setIdNumber(dto.getIdNumber());
+	 * form.setBpoName(dto.getBpoName());
+	 * form.setExecutiveReview(dto.getExecutiveReview());
+	 * form.setVendorReview(dto.getVendorReview());
+	 * 
+	 * form.setWorkflowStatus(WorkflowStatus.RESUBMITTED);
+	 * form.setResendRequested(false); form.setResendApproved(false);
+	 * 
+	 * return mapToDto(formRepository.save(form)); }
+	 */ 
+	
+	@Override
+	public FormResponseDto modifyAndResubmit(Long formId,
+	                                         BpoModifyDto dto,
+	                                         HttpSession session) {
 
-        // Replace old data
-        form.setVendorShopName(dto.getVendorShopName());
-        form.setVendorName(dto.getVendorName());
-        form.setContactNumber(dto.getContactNumber());
-        form.setMailId(dto.getMailId());
-        form.setVendorLocation(dto.getVendorLocation());
-        form.setDoorNumber(dto.getDoorNumber());
-        form.setStreetName(dto.getStreetName());
-        form.setAreaName(dto.getAreaName());
-        form.setPinCode(dto.getPinCode());
-        form.setState(dto.getState());
+	    Long bpoId = (Long) session.getAttribute("userId");
 
-        form.setExecutiveReview(dto.getExecutiveReview());
-        form.setVendorReview(dto.getVendorReview());
+	    if (bpoId == null) {
+	        throw new RuntimeException("Unauthorized - Login Required");
+	    }
 
-        form.setWorkflowStatus(WorkflowStatus.RESUBMITTED);
-        form.setResendRequested(false);
-        form.setResendApproved(false);
+	    Form form = formRepository.findById(formId)
+	            .orElseThrow(() -> new RuntimeException("Form not found"));
 
-        return mapToDto(formRepository.save(form));
-    }
+	    if (!WorkflowStatus.REOPENED.equals(form.getWorkflowStatus())) {
+	        throw new RuntimeException("Form is not editable");
+	    }
 
-    // DTO Mapper
-    private FormResponseDto mapToDto(Form form) {
+	    form.setIdNumber(dto.getIdNumber());
+	    form.setBpoName(dto.getBpoName());
+	    form.setExecutiveReview(dto.getExecutiveReview());
+	    form.setVendorReview(dto.getVendorReview());
 
-        return FormResponseDto.builder()
-                .id(form.getId())
-                .executiveId(form.getExecutiveId())
-                .executiveName(form.getExecutiveName())
-                .teamleadId(form.getTeamleadId())
-                .teamleadName(form.getTeamleadName())
-                .vendorShopName(form.getVendorShopName())
-                .vendorName(form.getVendorName())
-                .status(form.getStatus())
-                .tag(form.getTag())
-                .createdAt(form.getCreatedAt())
-                .build();
-    }
+	    form.setBpoActionDate(LocalDateTime.now());
+
+	    if ("SOLVED".equalsIgnoreCase(dto.getAction())) {
+
+	        form.setSolved(true);
+	        form.setTag(FormTag.GREEN);
+
+	    } else {
+
+	        form.setSolved(false);
+	    }
+
+	    form.setWorkflowStatus(WorkflowStatus.RESUBMITTED);
+	    form.setResendRequested(false);
+	    form.setResendApproved(false);
+
+	    return mapToDto(formRepository.save(form));
+	}
+	/*
+	 * // DTO Mapper private FormResponseDto mapToDto(Form form) {
+	 * 
+	 * return FormResponseDto.builder() .id(form.getId())
+	 * .executiveId(form.getExecutiveId()) .executiveName(form.getExecutiveName())
+	 * .teamleadId(form.getTeamleadId()) .teamleadName(form.getTeamleadName())
+	 * .vendorShopName(form.getVendorShopName()) .vendorName(form.getVendorName())
+	 * .status(form.getStatus()) .tag(form.getTag()) .createdAt(form.getCreatedAt())
+	 * .build(); }
+	 */
+
+	private FormResponseDto mapToDto(Form form) {
+
+		return FormResponseDto.builder().id(form.getId()).executiveId(form.getExecutiveId())
+				.executiveName(form.getExecutiveName()).teamleadId(form.getTeamleadId())
+				.teamleadName(form.getTeamleadName()).vendorShopName(form.getVendorShopName())
+				.vendorName(form.getVendorName()).contactNumber(form.getContactNumber()).mailId(form.getMailId())
+				.vendorType(form.getVendorType()).vendorLocation(form.getVendorLocation()).latitude(form.getLatitude())
+				.longitude(form.getLongitude()).doorNumber(form.getDoorNumber()).streetName(form.getStreetName())
+				.areaName(form.getAreaName()).pinCode(form.getPinCode()).state(form.getState()).tag(form.getTag())
+				.status(form.getStatus()).review(form.getReview())
+
+				// BPO
+				.solved(form.getSolved()).idNumber(form.getIdNumber()).bpoName(form.getBpoName())
+				.executiveReview(form.getExecutiveReview()).vendorReview(form.getVendorReview())
+
+				// Correction
+				.resendRequested(form.getResendRequested()).bpoReason(form.getBpoReason())
+				.resendApproved(form.getResendApproved())
+
+				.createdAt(form.getCreatedAt()).build();
+	} 
+	
+	@Override
+	public Long getMyRequestCount(HttpSession session) {
+
+	    Long bpoId = (Long) session.getAttribute("userId");
+
+	    return formRepository.findAll()
+	            .stream()
+	            .filter(f -> bpoId.equals(f.getAssignedBpoId())
+	                    && Boolean.TRUE.equals(f.getResendRequested()))
+	            .count();
+	}
+
+	@Override
+	public Map<String, Long> getMyApprovalStats(HttpSession session) {
+
+	    Long bpoId = (Long) session.getAttribute("userId");
+
+	    long approved = formRepository.findAll()
+	            .stream()
+	            .filter(f -> bpoId.equals(f.getAssignedBpoId())
+	                    && Boolean.TRUE.equals(f.getResendApproved()))
+	            .count();
+
+	    long rejected = formRepository.findAll()
+	            .stream()
+	            .filter(f -> bpoId.equals(f.getAssignedBpoId())
+	                    && Boolean.FALSE.equals(f.getResendApproved())
+	                    && Boolean.FALSE.equals(f.getResendRequested()))
+	            .count();
+
+	    Map<String, Long> map = new HashMap<>();
+	    map.put("approved", approved);
+	    map.put("rejected", rejected);
+
+	    return map;
+	}  
+	 
+	
+	@Override
+	public List<FormResponseDto> getReopenedForms(HttpSession session) {
+
+	    Long bpoId = (Long) session.getAttribute("userId");
+
+	    if (bpoId == null) {
+	        throw new RuntimeException("Unauthorized - Login Required");
+	    }
+
+	    List<Form> forms = formRepository
+	            .findByAssignedBpoIdAndWorkflowStatus(
+	                    bpoId,
+	                    WorkflowStatus.REOPENED
+	            );
+
+	    return forms.stream()
+	            .filter(f -> Boolean.TRUE.equals(f.getResendApproved()))
+	            .map(this::mapToDto)
+	            .collect(Collectors.toList());
+	}
+	
 }

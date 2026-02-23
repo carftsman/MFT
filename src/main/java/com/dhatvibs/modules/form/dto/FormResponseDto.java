@@ -37,7 +37,20 @@ public class FormResponseDto {
     private FormStatus status;
     private String review;
     
-    private String resendReason; //added
+    private String resendReason; //added 
+    
+    
+ // BPO Section
+    private Boolean solved;
+    private String idNumber;
+    private String bpoName;
+    private String executiveReview;
+    private String vendorReview;
+
+    // Correction Section
+    private Boolean resendRequested;
+    private String bpoReason;
+    private Boolean resendApproved;
 
 
     private LocalDateTime createdAt;

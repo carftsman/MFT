@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;  
 import com.dhatvibs.modules.form.entity.Form;
 import com.dhatvibs.modules.form.entity.FormTag;
+import com.dhatvibs.modules.form.entity.WorkflowStatus;
   
   @Repository 
   public interface FormRepository extends JpaRepository<Form, Long>
@@ -43,7 +44,13 @@ import com.dhatvibs.modules.form.entity.FormTag;
 		       )
 		   ORDER BY f.createdAt ASC
 		""")
-		List<Form> findAvailableFormsForBpo(Long bpoId);
+		List<Form> findAvailableFormsForBpo(Long bpoId); 
+  
+  List<Form> findByAssignedBpoIdAndBpoActionDateIsNotNull(Long assignedBpoId);  //added
+  
+  List<Form> findByAssignedBpoIdAndWorkflowStatus(
+	        Long assignedBpoId,
+	        WorkflowStatus workflowStatus);
  
   }
    

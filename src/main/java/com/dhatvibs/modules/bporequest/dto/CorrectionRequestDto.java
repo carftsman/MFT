@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class CorrectionRequestDto {
 
-    private String reason;
+    //private String bporeason;  
+	 private String bpoReason;
+    
 
 }

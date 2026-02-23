@@ -68,7 +68,10 @@ private Boolean solved;  // true = solved, false = not solved
 private String idNumber;     //added
 private String bpoName;   //added
 private String executiveReview;
-private String vendorReview;
+private String vendorReview;  
+
+@Column(length = 1000)
+private String bpoReason;
 
 private LocalDateTime bpoActionDate;
 private LocalDateTime reappearDate; 
