@@ -36,6 +36,8 @@ public class FormResponseDto {
     private FormTag tag;
     private FormStatus status;
     private String review;
+    
+    private String resendReason; //added
 
 
     private LocalDateTime createdAt;

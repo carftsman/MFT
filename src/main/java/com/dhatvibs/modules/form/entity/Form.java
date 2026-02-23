@@ -65,12 +65,15 @@ private String assignedBpoName;
 
 //BPO Action
 private Boolean solved;  // true = solved, false = not solved
-
+private String idNumber;     //added
+private String bpoName;   //added
 private String executiveReview;
 private String vendorReview;
 
 private LocalDateTime bpoActionDate;
 private LocalDateTime reappearDate; 
+
+
 
 
 //REQUEST RESEND
@@ -83,6 +86,14 @@ private String resendReason;
 private Boolean resendApproved = false;
 
  
+
+@Enumerated(EnumType.STRING)
+private WorkflowStatus workflowStatus;
+
+private Long managerId;
+private String managerName;
+
+private LocalDateTime resendApprovedDate;
   
   }
  

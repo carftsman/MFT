@@ -86,6 +86,8 @@ public class BpoServiceImpl implements BpoService {
         }
 
         /*form.setReview(dto.getReview()); */
+        form.setIdNumber(dto.getIdNumber());   //added
+        form.setBpoName(dto.getBpoName());     //added
         form.setExecutiveReview(dto.getExecutiveReview());
         form.setVendorReview(dto.getVendorReview());
        

@@ -134,7 +134,17 @@ public class RequestServiceImpl implements RequestService {
                 .contactNumber(form.getContactNumber())
                 .mailId(form.getMailId())
                 .tag(form.getTag())
-                .status(form.getStatus())
+                .status(form.getStatus()) 
+                .areaName(form.getAreaName())
+                .doorNumber(form.getDoorNumber())
+                .latitude(form.getLatitude())
+                .longitude(form.getLongitude())
+                .state(form.getState())
+                .streetName(form.getStreetName())
+                .pinCode(form.getPinCode())
+                .vendorType(form.getVendorType())
+                .vendorLocation(form.getVendorLocation())
+                .resendReason(form.getResendReason())   // VERY IMPORTANT
                 .review(form.getReview())
                 .createdAt(form.getCreatedAt())
                 .build();

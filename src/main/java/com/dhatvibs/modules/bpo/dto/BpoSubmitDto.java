@@ -9,7 +9,8 @@ public class BpoSubmitDto {
     // private String review; 
     
     //added
-   
+    private String idNumber;     //added
+    private String bpoName;   //added
     private String executiveReview;
     private String vendorReview;
 
