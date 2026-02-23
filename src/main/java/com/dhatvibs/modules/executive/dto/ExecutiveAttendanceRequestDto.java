@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ExecutiveAttendanceRequestDto {
 
-    private Double latitude;
-    private Double longitude;
+    private String latitude;
+    private String longitude;
 }

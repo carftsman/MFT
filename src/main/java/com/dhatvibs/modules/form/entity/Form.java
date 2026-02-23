@@ -64,7 +64,9 @@ private Long assignedBpoId;
 private String assignedBpoName;
 
 //BPO Action
-private Boolean solved;  // true = solved, false = not solved
+//private Boolean solved;  // true = solved, false = not solved
+@Column(nullable = false)
+private Boolean solved = false;
 private String idNumber;     //added
 private String bpoName;   //added
 private String executiveReview;

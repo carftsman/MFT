@@ -1,6 +1,7 @@
 package com.dhatvibs.modules.executive.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,12 @@ public interface ExecutiveAttendanceRepository
         extends JpaRepository<ExecutiveAttendance, Long> {
 
     Optional<ExecutiveAttendance> 
-        findByExecutiveNameAndAttendanceDate(String executiveName, LocalDate attendanceDate);
+    findByExecutiveIdAndAttendanceDate(Long executiveId, LocalDate attendanceDate); 
+    
+	/*
+	 * List<ExecutiveAttendance> findByExecutiveIdOrderByAttendanceDateDesc(Long
+	 * executiveId);
+	 */
+    
+    List<ExecutiveAttendance> findAllByOrderByAttendanceDateDesc();
 }

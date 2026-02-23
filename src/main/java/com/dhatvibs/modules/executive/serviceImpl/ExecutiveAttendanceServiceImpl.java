@@ -2,8 +2,8 @@ package com.dhatvibs.modules.executive.serviceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,43 +13,43 @@ import com.dhatvibs.modules.executive.entity.ExecutiveAttendance;
 import com.dhatvibs.modules.executive.repository.ExecutiveAttendanceRepository;
 import com.dhatvibs.modules.executive.service.ExecutiveAttendanceService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceService {
 
     @Autowired
     private ExecutiveAttendanceRepository repository;
 
-    @Autowired
-    private HttpSession session;
-
     @Override
-    public String markAttendance(ExecutiveAttendanceRequestDto dto) {
+    public String markAttendance(ExecutiveAttendanceRequestDto dto, HttpSession session) {
 
-        String executiveName = (String) session.getAttribute("username");
+        Long executiveId = (Long) session.getAttribute("userId");
+        //String executiveName = (String) session.getAttribute("name");
+        String executiveName = (String) session.getAttribute("executiveName");
         String teamleadName = (String) session.getAttribute("teamleadName");
 
-        if (executiveName == null) {
+        if (executiveId == null) {
             throw new RuntimeException("User not logged in");
         }
 
         LocalDate today = LocalDate.now();
 
-        // Check already marked
-        boolean exists = repository
-                .findByExecutiveNameAndAttendanceDate(executiveName, today)
-                .isPresent();
+        Optional<ExecutiveAttendance> existing =
+                repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
 
-        if (exists) {
-            return "Attendance already marked today";
+        if (existing.isPresent()) {
+            return "Attendance already marked for today";
         }
 
         ExecutiveAttendance attendance = ExecutiveAttendance.builder()
+                .executiveId(executiveId)
                 .executiveName(executiveName)
                 .teamleadName(teamleadName)
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .attendanceDate(today)
-                .createdAt(LocalDateTime.now())
+                .loginTime(LocalDateTime.now())
                 .build();
 
         repository.save(attendance);
@@ -58,16 +58,36 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
     }
 
     @Override
-    public boolean isAttendanceMarkedToday() {
+    public boolean isAttendanceMarkedToday(HttpSession session) {
 
-        String executiveName = (String) session.getAttribute("username");
+        Long executiveId = (Long) session.getAttribute("userId");
 
-        if (executiveName == null) {
+        if (executiveId == null) {
             throw new RuntimeException("User not logged in");
         }
 
-        return repository
-                .findByExecutiveNameAndAttendanceDate(executiveName, LocalDate.now())
-                .isPresent();
+        LocalDate today = LocalDate.now();
+
+        Optional<ExecutiveAttendance> existing =
+                repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
+
+        return existing.isPresent();
+    }  
+    
+    @Override
+    public List<ExecutiveAttendance> getAllExecutiveAttendance(HttpSession session) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (role == null) {
+            throw new RuntimeException("User not logged in");
+        }
+
+        // Allow only ADMIN or MANAGER
+        if (!role.equals("ADMIN") && !role.equals("MANAGER")) {
+            throw new RuntimeException("Access Denied: Only ADMIN or MANAGER can view attendance");
+        }
+
+        return repository.findAllByOrderByAttendanceDateDesc();
     }
 }

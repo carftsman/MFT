@@ -7,8 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "executive_attendance",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"executiveName", "attendanceDate"}))
+@Table(name = "executive_attendance")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,15 +19,21 @@ public class ExecutiveAttendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long executiveId;
     private String executiveName;
-
     private String teamleadName;
 
-    private Double latitude;
+    private String latitude;
+    private String longitude;
 
-    private Double longitude;
-
-    private LocalDate attendanceDate;   // Only one per day
-
+    private LocalDate attendanceDate;
+    private LocalDateTime loginTime; 
+    
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
