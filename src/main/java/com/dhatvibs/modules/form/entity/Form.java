@@ -65,6 +65,7 @@ private String assignedBpoName;
 
 //BPO Action
 //private Boolean solved;  // true = solved, false = not solved
+@Builder.Default
 @Column(nullable = false)
 private Boolean solved = false;
 private String idNumber;     //added
@@ -83,11 +84,13 @@ private LocalDateTime reappearDate;
 
 //REQUEST RESEND
 //Resend Request Flow
+@Builder.Default
 private Boolean resendRequested = false;
 
 @Column(length = 1000)
 private String resendReason;
 
+@Builder.Default
 private Boolean resendApproved = false;
 
  

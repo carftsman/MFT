@@ -78,6 +78,7 @@ public class FormServiceImpl implements FormService {
                 .status(requestDto.getStatus())
                 .review(requestDto.getReview())   // ✅ review added
                 .tag(tag)                         // ✅ dynamic tag
+                .solved(false) //added
                 .build();
 
         form = formRepository.save(form);
