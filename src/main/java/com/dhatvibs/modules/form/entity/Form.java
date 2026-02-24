@@ -32,7 +32,8 @@
   private String doorNumber; 
   private String streetName; 
   private String areaName; 
-  private String pinCode;
+  private String pinCode; 
+  private String district;   //added
   private String state;
   
   @Enumerated(EnumType.STRING) 

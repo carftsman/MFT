@@ -74,6 +74,7 @@ public class FormServiceImpl implements FormService {
                 .streetName(requestDto.getStreetName())
                 .areaName(requestDto.getAreaName())
                 .pinCode(requestDto.getPinCode())
+                .district(requestDto.getDistrict())
                 .state(requestDto.getState())
                 .status(requestDto.getStatus())
                 .review(requestDto.getReview())   // ✅ review added
@@ -123,6 +124,7 @@ public class FormServiceImpl implements FormService {
                 .streetName(form.getStreetName()) //added
                 .areaName(form.getAreaName())
                 .pinCode(form.getPinCode())      //added
+                .district(form.getDistrict())
                 .state(form.getState())
 
                 .tag(form.getTag())

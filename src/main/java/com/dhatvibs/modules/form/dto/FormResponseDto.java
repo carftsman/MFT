@@ -31,6 +31,7 @@ public class FormResponseDto {
     private String streetName;  //added
     private String areaName;   
     private String pinCode;     //added
+    private String district;   //added
     private String state;
 
     private FormTag tag;

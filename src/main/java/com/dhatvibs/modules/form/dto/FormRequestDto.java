@@ -20,6 +20,7 @@ public class FormRequestDto {
     private String streetName;
     private String areaName;
     private String pinCode;
+    private String district;    //added
     private String state;
 
     private FormStatus status;  // INTERESTED / NOT_INTERESTED
