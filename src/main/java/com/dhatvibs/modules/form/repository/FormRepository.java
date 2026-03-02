@@ -34,17 +34,25 @@ import com.dhatvibs.modules.form.entity.WorkflowStatus;
 	 * f.createdAt ASC """) List<Form> findAvailableFormsForBpo();
 	 */
   
+	/*
+	 * @Query(""" SELECT f FROM Form f WHERE f.tag !=
+	 * com.dhatvibs.modules.form.entity.FormTag.GREEN AND ( f.assignedBpoId IS NULL
+	 * OR f.assignedBpoId = :bpoId OR (f.solved = false AND f.reappearDate <=
+	 * CURRENT_TIMESTAMP) ) ORDER BY f.createdAt ASC """) List<Form>
+	 * findAvailableFormsForBpo(Long bpoId);
+	 */ 
+  
   @Query("""
-		   SELECT f FROM Form f
-		   WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
-		   AND (
-		           f.assignedBpoId IS NULL
-		        OR f.assignedBpoId = :bpoId
-		        OR (f.solved = false AND f.reappearDate <= CURRENT_TIMESTAMP)
-		       )
-		   ORDER BY f.createdAt ASC
+		    SELECT f FROM Form f
+		    WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
+		    AND (
+		            (f.assignedBpoId IS NULL)
+		         OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL)
+		         OR (f.solved = false AND f.reappearDate <= CURRENT_TIMESTAMP)
+		        )
+		    ORDER BY f.createdAt ASC
 		""")
-		List<Form> findAvailableFormsForBpo(Long bpoId); 
+		List<Form> findAvailableFormsForBpo(Long bpoId);
   
   List<Form> findByAssignedBpoIdAndBpoActionDateIsNotNull(Long assignedBpoId);  //added
   
