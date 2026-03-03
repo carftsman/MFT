@@ -168,8 +168,8 @@ public class BpoServiceImpl implements BpoService {
 	        form.setSolved(true); 
 	        
 	        // Remove assignment after solving
-	        form.setAssignedBpoId(null);   //added
-	        form.setAssignedBpoName(null); //added
+	       // form.setAssignedBpoId(null);   //added
+	       // form.setAssignedBpoName(null); //added
 
 	        if (form.getStatus() == FormStatus.INTERESTED ||
 	            form.getStatus() == FormStatus.NOT_INTERESTED) {
