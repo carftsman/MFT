@@ -142,6 +142,7 @@ public class RequestServiceImpl implements RequestService {
                 .state(form.getState())
                 .streetName(form.getStreetName())
                 .pinCode(form.getPinCode())
+                .bpoName(form.getBpoName())
                 .vendorType(form.getVendorType())
                 .vendorLocation(form.getVendorLocation())
                 .resendReason(form.getResendReason())   // VERY IMPORTANT
