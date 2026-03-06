@@ -200,7 +200,7 @@ public class BpoServiceImpl implements BpoService {
 				.vendorName(form.getVendorName()).contactNumber(form.getContactNumber())
 				.vendorLocation(form.getVendorLocation()).mailId(form.getMailId()).vendorType(form.getVendorType()).doorNumber(form.getDoorNumber())
 				.latitude(form.getLatitude()).longitude(form.getLongitude()).streetName(form.getStreetName()).areaName(form.getAreaName()).pinCode(form.getPinCode()).district(form.getDistrict())
-				.state(form.getState()).tag(form.getTag()).status(form.getStatus()).review(form.getReview())
-				.createdAt(form.getCreatedAt()).build();
+				.state(form.getState()).tag(form.getTag()).status(form.getStatus()).review(form.getReview()).idNumber(form.getIdNumber()).bpoName(form.getBpoName()).executiveReview(form.getExecutiveReview()).vendorReview(form.getVendorReview())
+				.reappearDate(form.getReappearDate()).createdAt(form.getCreatedAt()).build();
 	}
 }

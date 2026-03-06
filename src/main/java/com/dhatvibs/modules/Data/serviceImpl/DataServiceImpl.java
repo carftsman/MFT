@@ -47,7 +47,8 @@ public class DataServiceImpl implements DataService {
                 .doorNumber(form.getDoorNumber())
                 .streetName(form.getStreetName())
                 .areaName(form.getAreaName())
-                .pinCode(form.getPinCode())
+                .pinCode(form.getPinCode()) 
+                .district(form.getDistrict())  //added
                 .state(form.getState())
 
                 .tag(form.getTag())
@@ -60,6 +61,8 @@ public class DataServiceImpl implements DataService {
                 .solved(form.getSolved())
                 .executiveReview(form.getExecutiveReview())
                 .vendorReview(form.getVendorReview())
+                .bpoName(form.getBpoName())  //added
+                
 
                 .bpoActionDate(form.getBpoActionDate())
                 .reappearDate(form.getReappearDate())

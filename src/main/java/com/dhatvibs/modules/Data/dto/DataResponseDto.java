@@ -27,7 +27,7 @@ public class DataResponseDto {
     private String contactNumber;
     private String mailId;
     private String vendorLocation;
-
+    private String district; //added
     private String doorNumber;
     private String streetName;
     private String areaName;
@@ -45,6 +45,9 @@ public class DataResponseDto {
     private Boolean solved;
     private String executiveReview;
     private String vendorReview;
+    private String idNumber; 
+    private String bpoName; 
+    
 
     private LocalDateTime bpoActionDate;
     private LocalDateTime reappearDate;

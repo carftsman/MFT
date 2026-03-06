@@ -42,15 +42,41 @@ import com.dhatvibs.modules.form.entity.WorkflowStatus;
 	 * findAvailableFormsForBpo(Long bpoId);
 	 */ 
   
+	/*
+	 * @Query(""" SELECT f FROM Form f WHERE f.tag !=
+	 * com.dhatvibs.modules.form.entity.FormTag.GREEN AND ( (f.assignedBpoId IS
+	 * NULL) OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL) OR (f.solved
+	 * = false AND f.reappearDate <= CURRENT_TIMESTAMP) ) ORDER BY f.createdAt ASC
+	 * """) List<Form> findAvailableFormsForBpo(Long bpoId);
+	 */ 
+  
+	/*
+	 * @Query(""" SELECT f FROM Form f WHERE f.tag !=
+	 * com.dhatvibs.modules.form.entity.FormTag.GREEN AND ( f.assignedBpoId IS NULL
+	 * OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL) OR (f.solved =
+	 * false AND f.reappearDate IS NOT NULL AND f.reappearDate <= CURRENT_TIMESTAMP)
+	 * ) ORDER BY f.createdAt ASC """) List<Form> findAvailableFormsForBpo(Long
+	 * bpoId);
+	 */  
+  
   @Query("""
 		    SELECT f FROM Form f
 		    WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
 		    AND (
-		            (f.assignedBpoId IS NULL)
+		            f.assignedBpoId IS NULL
 		         OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL)
-		         OR (f.solved = false AND f.reappearDate <= CURRENT_TIMESTAMP)
+		         OR (f.solved = false 
+		             AND f.reappearDate IS NOT NULL 
+		             AND f.reappearDate <= CURRENT_TIMESTAMP)
 		        )
-		    ORDER BY f.createdAt ASC
+		    ORDER BY 
+		        CASE 
+		            WHEN f.reappearDate IS NOT NULL 
+		                 AND f.reappearDate <= CURRENT_TIMESTAMP 
+		            THEN 0 
+		            ELSE 1 
+		        END,
+		        f.createdAt ASC
 		""")
 		List<Form> findAvailableFormsForBpo(Long bpoId);
   

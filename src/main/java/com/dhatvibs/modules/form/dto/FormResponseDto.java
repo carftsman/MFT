@@ -47,6 +47,8 @@ public class FormResponseDto {
     private String bpoName;
     private String executiveReview;
     private String vendorReview;
+    private LocalDateTime reappearDate;  //added
+
 
     // Correction Section
     private Boolean resendRequested;
