@@ -1,5 +1,9 @@
 package com.dhatvibs.modules.auth.serviceImpl;
 
+import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -79,7 +83,8 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponseDto(
                 "Activation Successful",
                 user.getUserCode(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getName()  //added
         );
     }
 
@@ -159,7 +164,8 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponseDto(
                 "Login Successful",
                 user.getUserCode(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getName()  //added
         );
     }
 
@@ -168,5 +174,86 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(HttpSession session) {
         session.invalidate();
+    }  
+    
+    
+    
+	/*
+	 * @Override public String forgotPassword(String userCode) {
+	 * 
+	 * User user = userRepository.findByUserCode(userCode) .orElseThrow(() -> new
+	 * RuntimeException("User not found"));
+	 * 
+	 * String token = UUID.randomUUID().toString();
+	 * 
+	 * user.setResetToken(token);
+	 * user.setTokenExpiry(LocalDateTime.now().plusMinutes(10));
+	 * 
+	 * userRepository.save(user);
+	 * 
+	 * // In production send via email return "Reset Token: " + token; }
+	 */
+    
+    
+	/*
+	 * @Override public String resetPassword(ResetPasswordRequestDto request) {
+	 * 
+	 * User user = userRepository.findByResetToken(request.getToken())
+	 * .orElseThrow(() -> new RuntimeException("Invalid token"));
+	 * 
+	 * if (user.getTokenExpiry().isBefore(LocalDateTime.now())) { throw new
+	 * RuntimeException("Token expired"); }
+	 * 
+	 * if (!request.getNewPassword().equals(request.getConfirmPassword())) { throw
+	 * new RuntimeException("Passwords do not match"); }
+	 * 
+	 * user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+	 * user.setResetToken(null); user.setTokenExpiry(null);
+	 * 
+	 * userRepository.save(user);
+	 * 
+	 * return "Password Reset Successful"; }
+	 */  
+    
+    @Override
+    public String forgotPassword(String userCode) {
+
+        User user = userRepository.findByUserCode(userCode)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Generate 6 digit OTP
+        int otp = 100000 + new Random().nextInt(900000);
+
+        user.setResetOtp(String.valueOf(otp));
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
+
+        userRepository.save(user);
+
+        // In production send via SMS or Email
+        return "OTP: " + otp;
+    }
+    
+    
+    @Override
+    public String resetPassword(ResetPasswordRequestDto request) {
+
+        User user = userRepository.findByResetOtp(request.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid OTP"));
+
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("OTP expired");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetOtp(null);
+        user.setOtpExpiry(null);
+
+        userRepository.save(user);
+
+        return "Password Reset Successful";
     }
 }

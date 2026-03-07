@@ -197,7 +197,7 @@ public class BpoRequestServiceImpl implements BpoRequestService {
 				.vendorName(form.getVendorName()).contactNumber(form.getContactNumber()).mailId(form.getMailId())
 				.vendorType(form.getVendorType()).vendorLocation(form.getVendorLocation()).latitude(form.getLatitude())
 				.longitude(form.getLongitude()).doorNumber(form.getDoorNumber()).streetName(form.getStreetName())
-				.areaName(form.getAreaName()).pinCode(form.getPinCode()).state(form.getState()).tag(form.getTag())
+				.areaName(form.getAreaName()).pinCode(form.getPinCode()).state(form.getState()).tag(form.getTag()).bpoReason(form.getBpoReason())  //added
 				.status(form.getStatus()).review(form.getReview())
 
 				// BPO

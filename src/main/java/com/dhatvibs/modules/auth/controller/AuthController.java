@@ -64,5 +64,15 @@ public class AuthController {
     public String logout(HttpSession session) {
         authService.logout(session);
         return "Logged Out Successfully";
+    }  
+    
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestBody ForgotPasswordRequestDto request) {
+        return authService.forgotPassword(request.getUserCode());
+    }  
+    
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestBody ResetPasswordRequestDto request) {
+        return authService.resetPassword(request);
     }
 }

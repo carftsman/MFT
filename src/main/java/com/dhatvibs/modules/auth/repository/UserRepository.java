@@ -8,5 +8,10 @@ import com.dhatvibs.modules.auth.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUserCode(String userCode);
+    Optional<User> findByUserCode(String userCode); 
+    
+    
+    //Optional<User> findByResetToken(String resetToken);   //added
+    
+    Optional<User> findByResetOtp(String resetOtp);
 }

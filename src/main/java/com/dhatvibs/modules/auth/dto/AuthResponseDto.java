@@ -10,4 +10,5 @@ public class AuthResponseDto {
     private String message;
     private String userCode;
     private String role;
+    private String name; //added
 }

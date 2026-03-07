@@ -13,5 +13,10 @@ public interface AuthService {
     //AuthResponseDto login(LoginRequestDto request, HttpSession session) {
 
 
-    void logout(HttpSession session);
+    void logout(HttpSession session); 
+    
+    
+    String forgotPassword(String userCode);
+
+    String resetPassword(ResetPasswordRequestDto request);
 }

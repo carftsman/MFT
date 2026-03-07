@@ -1,5 +1,7 @@
 package com.dhatvibs.modules.auth.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +35,16 @@ public class User {
     private Boolean isActive = true;
     
     private Long teamleadId;
-    private Long managerId;
+    private Long managerId;  
+    
+    //import java.time.LocalDateTime;
+    
+    //added
+
+   // private String resetToken;
+    private String resetOtp;
+    private LocalDateTime otpExpiry;
+
+    private LocalDateTime tokenExpiry;
 
 }
