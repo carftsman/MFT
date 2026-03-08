@@ -89,5 +89,35 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
         }
 
         return repository.findAllByOrderByAttendanceDateDesc();
+    }  
+    
+    
+    @Override
+    public List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
+            String executiveName,
+            LocalDate startDate,
+            LocalDate endDate,
+            HttpSession session) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (role == null) {
+            throw new RuntimeException("User not logged in");
+        }
+
+        if (!role.equals("ADMIN") && !role.equals("MANAGER") && !role.equals("REPORTER")) {
+            throw new RuntimeException("Access Denied: Only ADMIN or MANAGER or Data Analyst can view attendance");
+        }
+
+        if (startDate == null || endDate == null) {
+            throw new RuntimeException("Start date and End date are required");
+        }
+
+        return repository
+                .findByExecutiveNameAndAttendanceDateBetweenOrderByAttendanceDateDesc(
+                        executiveName,
+                        startDate,
+                        endDate
+                );
     }
 }

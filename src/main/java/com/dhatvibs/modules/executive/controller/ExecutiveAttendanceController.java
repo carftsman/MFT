@@ -1,5 +1,6 @@
 package com.dhatvibs.modules.executive.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,20 @@ public class ExecutiveAttendanceController {
     @GetMapping("/all")
     public List<ExecutiveAttendance> getAllExecutiveAttendance(HttpSession session) {
         return service.getAllExecutiveAttendance(session);
+    }  
+    
+    @GetMapping("/{executiveName}")
+    public List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
+            @PathVariable String executiveName,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
+            HttpSession session) {
+
+        return service.getAttendanceByNameAndDateRange(
+                executiveName,
+                startDate,
+                endDate,
+                session
+        );
     }
 }
