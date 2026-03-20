@@ -40,18 +40,32 @@ public class ExecutiveAttendanceController {
         return service.getAllExecutiveAttendance(session);
     }  
     
-    @GetMapping("/{executiveName}")
-    public List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
-            @PathVariable String executiveName,
+	/*
+	 * @GetMapping("/{executiveName}") public List<ExecutiveAttendance>
+	 * getAttendanceByNameAndDateRange(
+	 * 
+	 * @PathVariable String executiveName,
+	 * 
+	 * @RequestParam LocalDate startDate,
+	 * 
+	 * @RequestParam LocalDate endDate, HttpSession session) {
+	 * 
+	 * return service.getAttendanceByNameAndDateRange( executiveName, startDate,
+	 * endDate, session ); }
+	 */  
+    
+    @GetMapping("/{userCode}")
+    public List<ExecutiveAttendance> getAttendanceByUserCodeAndDateRange(
+            @PathVariable String userCode,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
             HttpSession session) {
 
-        return service.getAttendanceByNameAndDateRange(
-                executiveName,
+        return service.getAttendanceByUserCodeAndDateRange(
+                userCode,
                 startDate,
                 endDate,
                 session
         );
-    }
+    } 
 }

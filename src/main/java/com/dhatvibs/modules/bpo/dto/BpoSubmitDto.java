@@ -13,5 +13,8 @@ public class BpoSubmitDto {
     private String bpoName;   //added
     private String executiveReview;
     private String vendorReview;
+ // NEW
+    private Boolean vendorReady;
+    private Integer onboardInDays;
 
 }

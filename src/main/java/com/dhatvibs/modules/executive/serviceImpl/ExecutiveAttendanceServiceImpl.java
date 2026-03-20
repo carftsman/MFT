@@ -26,6 +26,7 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
 
         Long executiveId = (Long) session.getAttribute("userId");
         //String executiveName = (String) session.getAttribute("name");
+        String userCode = (String) session.getAttribute("userCode");
         String executiveName = (String) session.getAttribute("executiveName");
         String teamleadName = (String) session.getAttribute("teamleadName");
 
@@ -46,7 +47,8 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
                 .executiveId(executiveId)
                 .executiveName(executiveName)
                 .teamleadName(teamleadName)
-                .latitude(dto.getLatitude())
+                .userCode(userCode)            
+                .latitude(dto.getLatitude()) 
                 .longitude(dto.getLongitude())
                 .attendanceDate(today)
                 .loginTime(LocalDateTime.now())
@@ -92,9 +94,31 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
     }  
     
     
+	/*
+	 * @Override public List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
+	 * String executiveName, LocalDate startDate, LocalDate endDate, HttpSession
+	 * session) {
+	 * 
+	 * String role = (String) session.getAttribute("role");
+	 * 
+	 * if (role == null) { throw new RuntimeException("User not logged in"); }
+	 * 
+	 * if (!role.equals("ADMIN") && !role.equals("MANAGER") &&
+	 * !role.equals("REPORTER")) { throw new
+	 * RuntimeException("Access Denied: Only ADMIN or MANAGER or Data Analyst can view attendance"
+	 * ); }
+	 * 
+	 * if (startDate == null || endDate == null) { throw new
+	 * RuntimeException("Start date and End date are required"); }
+	 * 
+	 * return repository
+	 * .findByExecutiveNameAndAttendanceDateBetweenOrderByAttendanceDateDesc(
+	 * executiveName, startDate, endDate ); }
+	 */  
+    
     @Override
-    public List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
-            String executiveName,
+    public List<ExecutiveAttendance> getAttendanceByUserCodeAndDateRange(
+            String userCode,
             LocalDate startDate,
             LocalDate endDate,
             HttpSession session) {
@@ -105,8 +129,16 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
             throw new RuntimeException("User not logged in");
         }
 
-        if (!role.equals("ADMIN") && !role.equals("MANAGER") && !role.equals("REPORTER")) {
-            throw new RuntimeException("Access Denied: Only ADMIN or MANAGER or Data Analyst can view attendance");
+        if (!role.equals("ADMIN") && 
+            !role.equals("MANAGER") && 
+            !role.equals("REPORTER") &&
+            !role.equals("TEAMLEAD")) {
+        	
+        	
+
+            throw new RuntimeException(
+                "Access Denied: Only ADMIN, MANAGER or REPORTER can view attendance"
+            );
         }
 
         if (startDate == null || endDate == null) {
@@ -114,8 +146,8 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
         }
 
         return repository
-                .findByExecutiveNameAndAttendanceDateBetweenOrderByAttendanceDateDesc(
-                        executiveName,
+                .findByUserCodeAndAttendanceDateBetweenOrderByAttendanceDateDesc(
+                        userCode,
                         startDate,
                         endDate
                 );

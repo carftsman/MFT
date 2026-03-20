@@ -32,5 +32,16 @@ public class BpoController {
             HttpSession session) {
 
         return bpoService.submitForm(formId, dto, session);
+    }  
+    
+    @GetMapping("/reappear-forms")
+    public List<FormResponseDto> getReappearForms(HttpSession session) {
+        return bpoService.getReappearForms(session);
+    } 
+    
+    
+    @GetMapping("/solved-forms")
+    public List<FormResponseDto> getSolvedForms(HttpSession session) {
+        return bpoService.getSolvedForms(session);
     }
 }

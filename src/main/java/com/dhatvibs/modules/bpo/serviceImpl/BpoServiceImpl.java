@@ -24,58 +24,170 @@ public class BpoServiceImpl implements BpoService {
 	@Autowired
 	private FormRepository formRepository;
 
-	// =========================
-	// 1️⃣ DASHBOARD API
-	// =========================
+	
+	/*
+	 * @Override
+	 * 
+	 * @Transactional public List<FormResponseDto> getDashboardForms(HttpSession
+	 * session) {
+	 * 
+	 * Long bpoId = (Long) session.getAttribute("userId"); String bpoName = (String)
+	 * session.getAttribute("userName");
+	 * 
+	 * if (bpoId == null) { throw new
+	 * RuntimeException("Unauthorized - Session expired"); }
+	 * 
+	 * // List<Form> forms = formRepository.findAvailableFormsForBpo(); List<Form>
+	 * forms = formRepository.findAvailableFormsForBpo(bpoId);
+	 * 
+	 * 
+	 * for (Form form : forms) {
+	 * 
+	 * if (form.getAssignedBpoId() == null) {
+	 * 
+	 * form.setAssignedBpoId(bpoId); form.setAssignedBpoName(bpoName);
+	 * formRepository.saveAndFlush(form); // 🔥 Important
+	 * 
+	 * break; } }
+	 * 
+	 * // added System.out.println("Session ID: " + session.getId());
+	 * System.out.println("Session userId: " + session.getAttribute("userId"));
+	 * 
+	 * return forms.stream().map(this::mapToDto).collect(Collectors.toList()); }
+	 */  
+	
+	
+	
+	/*
+	 * @Override
+	 * 
+	 * @Transactional public List<FormResponseDto> getDashboardForms(HttpSession
+	 * session) {
+	 * 
+	 * Long bpoId = (Long) session.getAttribute("userId"); String bpoName = (String)
+	 * session.getAttribute("userName");
+	 * 
+	 * if (bpoId == null) { throw new RuntimeException("Session expired"); }
+	 * 
+	 * List<Form> forms = formRepository.findNewForms();
+	 * 
+	 * for (Form form : forms) {
+	 * 
+	 * if (form.getAssignedBpoId() == null) {
+	 * 
+	 * form.setAssignedBpoId(bpoId); form.setAssignedBpoName(bpoName);
+	 * 
+	 * formRepository.saveAndFlush(form);
+	 * 
+	 * return List.of(mapToDto(form)); } }
+	 * 
+	 * return List.of(); }
+	 */ 
+	
+	/*
+	 * @Override
+	 * 
+	 * @Transactional public List<FormResponseDto> getDashboardForms(HttpSession
+	 * session) {
+	 * 
+	 * Long bpoId = (Long) session.getAttribute("userId"); String bpoName = (String)
+	 * session.getAttribute("userName");
+	 * 
+	 * if (bpoId == null) { throw new RuntimeException("Session expired"); }
+	 * 
+	 * // Step 1: Assign NEW forms to BPO List<Form> newForms =
+	 * formRepository.findNewForms();
+	 * 
+	 * for (Form form : newForms) {
+	 * 
+	 * if (form.getAssignedBpoId() == null) {
+	 * 
+	 * form.setAssignedBpoId(bpoId); form.setAssignedBpoName(bpoName);
+	 * 
+	 * formRepository.save(form); } }
+	 * 
+	 * // Step 2: Fetch ALL forms assigned to this BPO List<Form> assignedForms =
+	 * formRepository .findByAssignedBpoIdAndSolvedFalse(bpoId);
+	 * 
+	 * return assignedForms .stream() .map(this::mapToDto)
+	 * .collect(Collectors.toList()); }
+	 */ 
 	@Override
 	@Transactional
 	public List<FormResponseDto> getDashboardForms(HttpSession session) {
 
-		Long bpoId = (Long) session.getAttribute("userId");
-		String bpoName = (String) session.getAttribute("userName");
+	    Long bpoId = (Long) session.getAttribute("userId");
+	    String bpoName = (String) session.getAttribute("userName");
 
-		if (bpoId == null) {
-			throw new RuntimeException("Unauthorized - Session expired");
-		}
+	    if (bpoId == null) {
+	        throw new RuntimeException("Session expired");
+	    }
 
-		// List<Form> forms = formRepository.findAvailableFormsForBpo();
-		List<Form> forms = formRepository.findAvailableFormsForBpo(bpoId);
+	    // Step 1: check how many forms BPO already has
+	    List<Form> assignedForms =
+	          //  formRepository.findByAssignedBpoIdAndSolvedFalse(bpoId);
+	    		formRepository.findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(bpoId);
+	    
 
-		// Assign first available unassigned form
-		/*
-		 * for (Form form : forms) {
-		 * 
-		 * if (form.getAssignedBpoId() == null) {
-		 * 
-		 * form.setAssignedBpoId(bpoId); form.setAssignedBpoName(bpoName);
-		 * formRepository.save(form);
-		 * 
-		 * break; }
-		 * 
-		 * }
-		 */
-		for (Form form : forms) {
+	    int limit = 5;
 
-			if (form.getAssignedBpoId() == null) {
+	    if (assignedForms.size() < limit) {
 
-				form.setAssignedBpoId(bpoId);
-				form.setAssignedBpoName(bpoName);
-				formRepository.saveAndFlush(form); // 🔥 Important
+	        int needed = limit - assignedForms.size();
 
-				break;
-			}
-		}
+	        List<Form> newForms = formRepository.findNewForms(
+	                org.springframework.data.domain.PageRequest.of(0, needed)
+	        );
 
-		// added
-		System.out.println("Session ID: " + session.getId());
-		System.out.println("Session userId: " + session.getAttribute("userId"));
+	        for (Form form : newForms) {
 
-		return forms.stream().map(this::mapToDto).collect(Collectors.toList());
+	            form.setAssignedBpoId(bpoId);
+	            form.setAssignedBpoName(bpoName);
+
+	            formRepository.save(form);
+
+	            assignedForms.add(form);
+	        }
+	    }
+
+	    return assignedForms
+	            .stream()
+	            .map(this::mapToDto)
+	            .collect(Collectors.toList());
 	}
+	
+	
+	/*
+	 * @Override
+	 * 
+	 * @Transactional(readOnly = true) public List<FormResponseDto>
+	 * getReappearForms(HttpSession session) {
+	 * 
+	 * Long bpoId = (Long) session.getAttribute("userId");
+	 * 
+	 * if (bpoId == null) { throw new RuntimeException("Session expired"); }
+	 * 
+	 * return formRepository.findReappearForms(bpoId) .stream() .map(this::mapToDto)
+	 * .collect(Collectors.toList()); }
+	 */ 
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<FormResponseDto> getReappearForms(HttpSession session) {
 
-	// =========================
-	// 2️⃣ SUBMIT API
-	// =========================
+	    Long bpoId = (Long) session.getAttribute("userId");
+
+	    if (bpoId == null) {
+	        throw new RuntimeException("Session expired");
+	    }
+
+	    List<Form> forms = formRepository.findReappearForms(bpoId);
+
+	    return forms.stream()
+	            .map(this::mapToDto)
+	            .collect(Collectors.toList());
+	}
+	
 	/*
 	 * @Override
 	 * 
@@ -84,60 +196,41 @@ public class BpoServiceImpl implements BpoService {
 	 * 
 	 * Long bpoId = (Long) session.getAttribute("userId");
 	 * 
+	 * if (bpoId == null) { throw new RuntimeException("Session expired"); }
+	 * 
 	 * Form form = formRepository.findById(formId) .orElseThrow(() -> new
 	 * RuntimeException("Form not found"));
 	 * 
-	 * System.out.println("Form assignedBpoId: " + form.getAssignedBpoId());
-	 * System.out.println("Session userId: " + bpoId);
-	 * 
-	 * 
-	 * 
-	 * if (!bpoId.equals(form.getAssignedBpoId())) { throw new
-	 * RuntimeException("Form not assigned to this BPO"); }
-	 * 
-	 * 
-	 * //added if (form.getAssignedBpoId() == null ||
+	 * if (form.getAssignedBpoId() == null ||
 	 * !form.getAssignedBpoId().equals(bpoId)) {
 	 * 
 	 * throw new RuntimeException("Form not assigned to this BPO"); }
 	 * 
-	 * form.setReview(dto.getReview()); form.setIdNumber(dto.getIdNumber()); //added
-	 * form.setBpoName(dto.getBpoName()); //added
+	 * form.setIdNumber(dto.getIdNumber()); form.setBpoName(dto.getBpoName());
 	 * form.setExecutiveReview(dto.getExecutiveReview());
 	 * form.setVendorReview(dto.getVendorReview());
-	 * 
 	 * form.setBpoActionDate(LocalDateTime.now());
 	 * 
-	 * // ---------------- SOLVED ---------------- if
-	 * ("SOLVED".equalsIgnoreCase(dto.getAction())) {
+	 * if ("SOLVED".equalsIgnoreCase(dto.getAction())) {
 	 * 
 	 * form.setSolved(true);
 	 * 
-	 * // Tag change logic if (form.getStatus() == FormStatus.INTERESTED ||
-	 * form.getStatus() == FormStatus.NOT_INTERESTED) {
+	 * // Remove assignment after solving // form.setAssignedBpoId(null); //added //
+	 * form.setAssignedBpoName(null); //added
 	 * 
-	 * form.setTag(FormTag.GREEN); }
+	 * if (form.getStatus() == FormStatus.INTERESTED || form.getStatus() ==
+	 * FormStatus.NOT_INTERESTED) {
 	 * 
-	 * // If ONBOARDED -> already GREEN (no change)
+	 * form.setTag(FormTag.GREEN); } }
 	 * 
-	 * //form.setAssignedBpoId(null); // form.setExecutiveReview(null); //
-	 * form.setVendorReview(null); // form.setAssignedBpoName(null); }
+	 * else if ("NOT_SOLVED".equalsIgnoreCase(dto.getAction())) {
 	 * 
-	 * // ---------------- NOT SOLVED ---------------- else if
-	 * ("NOT_SOLVED".equalsIgnoreCase(dto.getAction())) {
-	 * 
-	 * form.setSolved(false);
-	 * 
-	 * form.setReappearDate(LocalDateTime.now().plusDays(2));
-	 * 
+	 * form.setSolved(false); form.setReappearDate(LocalDateTime.now().plusDays(2));
 	 * form.setAssignedBpoId(null); form.setAssignedBpoName(null); }
 	 * 
-	 * System.out.println("Session ID: " + session.getId());
-	 * System.out.println("Session userId: " + session.getAttribute("userId"));
-	 * 
-	 * 
-	 * return mapToDto(formRepository.save(form)); }
+	 * return mapToDto(formRepository.saveAndFlush(form)); }
 	 */ 
+	
 	@Override
 	@Transactional
 	public FormResponseDto submitForm(Long formId, BpoSubmitDto dto, HttpSession session) {
@@ -151,9 +244,7 @@ public class BpoServiceImpl implements BpoService {
 	    Form form = formRepository.findById(formId)
 	            .orElseThrow(() -> new RuntimeException("Form not found"));
 
-	    if (form.getAssignedBpoId() == null ||
-	        !form.getAssignedBpoId().equals(bpoId)) {
-
+	    if (!bpoId.equals(form.getAssignedBpoId())) {
 	        throw new RuntimeException("Form not assigned to this BPO");
 	    }
 
@@ -161,32 +252,93 @@ public class BpoServiceImpl implements BpoService {
 	    form.setBpoName(dto.getBpoName());
 	    form.setExecutiveReview(dto.getExecutiveReview());
 	    form.setVendorReview(dto.getVendorReview());
+	    form.setVendorReady(dto.getVendorReady());
+	    form.setOnboardInDays(dto.getOnboardInDays());
 	    form.setBpoActionDate(LocalDateTime.now());
+	    
+	   
 
+		/*
+		 * // Vendor onboarding logic if (Boolean.TRUE.equals(dto.getVendorReady()) &&
+		 * dto.getOnboardInDays() != null) {
+		 * 
+		 * LocalDateTime followUpDate =
+		 * LocalDateTime.now().plusDays(dto.getOnboardInDays());
+		 * 
+		 * form.setVendorReady(true); form.setOnboardInDays(dto.getOnboardInDays());
+		 * form.setOnboardFollowupDate(followUpDate); }
+		 */
+         
+	    
+	    String message = "";
+
+	    if (Boolean.TRUE.equals(dto.getVendorReady()) && dto.getOnboardInDays() != null) {
+
+	        LocalDateTime followUpDate = LocalDateTime.now().plusDays(dto.getOnboardInDays());
+
+	        form.setVendorReady(true);
+	        form.setOnboardInDays(dto.getOnboardInDays());
+	        form.setOnboardFollowupDate(followUpDate);
+
+	        message = "Go to vendor. He is ready to onboard on " + followUpDate.toLocalDate();
+	    }
+	    else {
+
+	        form.setVendorReady(false);
+	        message = "Currently vendor is not ready to onboard";
+	    }
+	     
+	    form.setVendorMessage(message);
+	    
 	    if ("SOLVED".equalsIgnoreCase(dto.getAction())) {
 
-	        form.setSolved(true); 
-	        
-	        // Remove assignment after solving
-	       // form.setAssignedBpoId(null);   //added
-	       // form.setAssignedBpoName(null); //added
+	        form.setSolved(true);
+	        form.setReappearDate(null);
 
 	        if (form.getStatus() == FormStatus.INTERESTED ||
 	            form.getStatus() == FormStatus.NOT_INTERESTED) {
 
 	            form.setTag(FormTag.GREEN);
 	        }
+
 	    }
 
 	    else if ("NOT_SOLVED".equalsIgnoreCase(dto.getAction())) {
 
 	        form.setSolved(false);
 	        form.setReappearDate(LocalDateTime.now().plusDays(2));
-	        form.setAssignedBpoId(null);
-	        form.setAssignedBpoName(null);
+
+	        // IMPORTANT: keep same BPO
+	        form.setAssignedBpoId(bpoId);
 	    }
 
-	    return mapToDto(formRepository.saveAndFlush(form));
+	    //return mapToDto(formRepository.saveAndFlush(form)); 
+	    
+	    //Form savedForm = formRepository.saveAndFlush(form);
+
+	    //FormResponseDto response = mapToDto(savedForm);
+
+	    //System.out.println(message); // optional log
+
+	   // return response; 
+	    Form savedForm = formRepository.saveAndFlush(form);
+
+	    FormResponseDto response = mapToDto(savedForm);
+	    response.setVendorMessage(message);
+
+	    return response;
+	}
+	
+	
+	@Override
+	public List<FormResponseDto> getSolvedForms(HttpSession session) {
+
+	    Long executiveId = (Long) session.getAttribute("userId");
+
+	    return formRepository.findByExecutiveIdAndSolvedTrue(executiveId)
+	            .stream()
+	            .map(this::mapToDto)
+	            .collect(Collectors.toList());
 	}
 
 	// =========================
@@ -201,6 +353,6 @@ public class BpoServiceImpl implements BpoService {
 				.vendorLocation(form.getVendorLocation()).mailId(form.getMailId()).vendorType(form.getVendorType()).doorNumber(form.getDoorNumber())
 				.latitude(form.getLatitude()).longitude(form.getLongitude()).streetName(form.getStreetName()).areaName(form.getAreaName()).pinCode(form.getPinCode()).district(form.getDistrict())
 				.state(form.getState()).tag(form.getTag()).status(form.getStatus()).review(form.getReview()).idNumber(form.getIdNumber()).bpoName(form.getBpoName()).executiveReview(form.getExecutiveReview()).vendorReview(form.getVendorReview())
-				.reappearDate(form.getReappearDate()).createdAt(form.getCreatedAt()).build();
+				.vendorMessage(form.getVendorMessage()).reappearDate(form.getReappearDate()).createdAt(form.getCreatedAt()).build();
 	}
 }

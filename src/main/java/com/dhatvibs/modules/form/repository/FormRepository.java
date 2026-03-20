@@ -59,26 +59,50 @@ import com.dhatvibs.modules.form.entity.WorkflowStatus;
 	 * bpoId);
 	 */  
   
+	/*
+	 * @Query(""" SELECT f FROM Form f WHERE f.tag !=
+	 * com.dhatvibs.modules.form.entity.FormTag.GREEN AND ( f.assignedBpoId IS NULL
+	 * OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL) OR (f.solved =
+	 * false AND f.reappearDate IS NOT NULL AND f.reappearDate <= CURRENT_TIMESTAMP)
+	 * ) ORDER BY CASE WHEN f.reappearDate IS NOT NULL AND f.reappearDate <=
+	 * CURRENT_TIMESTAMP THEN 0 ELSE 1 END, f.createdAt ASC """) List<Form>
+	 * findAvailableFormsForBpo(Long bpoId);
+	 */  
+  
+  //added
+	/*
+	 * @Query(""" SELECT f FROM Form f WHERE f.tag !=
+	 * com.dhatvibs.modules.form.entity.FormTag.GREEN AND f.assignedBpoId IS NULL
+	 * AND f.solved = false AND f.reappearDate IS NULL ORDER BY f.createdAt ASC """)
+	 * List<Form> findNewForms();
+	 */ 
+  
   @Query("""
-		    SELECT f FROM Form f
-		    WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
-		    AND (
-		            f.assignedBpoId IS NULL
-		         OR (f.assignedBpoId = :bpoId AND f.bpoActionDate IS NULL)
-		         OR (f.solved = false 
-		             AND f.reappearDate IS NOT NULL 
-		             AND f.reappearDate <= CURRENT_TIMESTAMP)
-		        )
-		    ORDER BY 
-		        CASE 
-		            WHEN f.reappearDate IS NOT NULL 
-		                 AND f.reappearDate <= CURRENT_TIMESTAMP 
-		            THEN 0 
-		            ELSE 1 
-		        END,
-		        f.createdAt ASC
-		""")
-		List<Form> findAvailableFormsForBpo(Long bpoId);
+		  SELECT f FROM Form f
+		  WHERE f.tag != com.dhatvibs.modules.form.entity.FormTag.GREEN
+		  AND f.assignedBpoId IS NULL
+		  AND f.solved = false
+		  AND f.reappearDate IS NULL
+		  ORDER BY f.createdAt ASC
+		  """)
+		  List<Form> findNewForms(org.springframework.data.domain.Pageable pageable);
+  
+  //added
+  @Query("""
+		  SELECT f FROM Form f
+		  WHERE f.assignedBpoId = :bpoId
+		  AND f.solved = false
+		  AND f.reappearDate IS NOT NULL
+		  AND f.reappearDate <= CURRENT_TIMESTAMP
+		  ORDER BY f.reappearDate ASC
+		  """)
+		  List<Form> findReappearForms(Long bpoId);
+  
+  //added for executive get solved forms
+  List<Form> findByExecutiveIdAndSolvedTrue(Long executiveId); 
+  
+  //List<Form> findByAssignedBpoIdAndSolvedFalse(Long assignedBpoId);//added
+  List<Form> findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(Long assignedBpoId);  //added
   
   List<Form> findByAssignedBpoIdAndBpoActionDateIsNotNull(Long assignedBpoId);  //added
   
@@ -90,30 +114,4 @@ import com.dhatvibs.modules.form.entity.WorkflowStatus;
    
 
 
-	/*
-	 * package com.dhatvibs.modules.form.repository;
-	 * 
-	 * import java.util.List;
-	 * 
-	 * import org.springframework.data.domain.Pageable; import
-	 * org.springframework.data.jpa.repository.*; import
-	 * org.springframework.stereotype.Repository;
-	 * 
-	 * import com.dhatvibs.modules.form.entity.Form;
-	 * 
-	 * import jakarta.persistence.LockModeType;
-	 * 
-	 * @Repository public interface FormRepository extends JpaRepository<Form, Long>
-	 * {
-	 * 
-	 * List<Form> findByExecutiveId(Long executiveId);
-	 * 
-	 * List<Form> findByTeamleadId(Long teamleadId);
-	 * 
-	 * List<Form> findByAssignedBpoIdAndBpoSolvedIsNull(Long bpoId);
-	 * 
-	 * @Lock(LockModeType.PESSIMISTIC_WRITE)
-	 * 
-	 * @Query("SELECT f FROM Form f WHERE f.isAssigned = false AND f.bpoSolved IS NULL"
-	 * ) List<Form> findUnassignedFormsForUpdate(Pageable pageable); }
-	 */
+	

@@ -11,5 +11,11 @@ public interface BpoService {
 
     List<FormResponseDto> getDashboardForms(HttpSession session);
 
-    FormResponseDto submitForm(Long formId, BpoSubmitDto dto, HttpSession session);
+    FormResponseDto submitForm(Long formId, BpoSubmitDto dto, HttpSession session); 
+    
+    //added
+    List<FormResponseDto> getReappearForms(HttpSession session); 
+    
+    //added for executive get bpo solved forms.
+     List<FormResponseDto> getSolvedForms(HttpSession session);
 }

@@ -56,5 +56,8 @@ public class FormResponseDto {
     private Boolean resendApproved;
 
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt;  
+    
+    
+    private String vendorMessage;  //added
 }

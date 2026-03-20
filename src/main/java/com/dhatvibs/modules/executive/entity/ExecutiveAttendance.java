@@ -22,6 +22,7 @@ public class ExecutiveAttendance {
     private Long executiveId;
     private String executiveName;
     private String teamleadName;
+    private String userCode;  //added
 
     private String latitude;
     private String longitude;

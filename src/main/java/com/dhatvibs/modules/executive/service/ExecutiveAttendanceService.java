@@ -20,8 +20,15 @@ public interface ExecutiveAttendanceService {
     
     
     //added
-    List<ExecutiveAttendance> getAttendanceByNameAndDateRange(
-            String executiveName,
+	/*
+	 * List<ExecutiveAttendance> getAttendanceByNameAndDateRange( String
+	 * executiveName, LocalDate startDate, LocalDate endDate, HttpSession session );
+	 */  
+    
+    
+    //added
+    List<ExecutiveAttendance> getAttendanceByUserCodeAndDateRange(
+            String userCode,
             LocalDate startDate,
             LocalDate endDate,
             HttpSession session

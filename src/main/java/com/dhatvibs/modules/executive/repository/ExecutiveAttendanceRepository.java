@@ -25,9 +25,15 @@ public interface ExecutiveAttendanceRepository
     
     
     //added
+	/*
+	 * List<ExecutiveAttendance>
+	 * findByExecutiveNameAndAttendanceDateBetweenOrderByAttendanceDateDesc( String
+	 * userCode, LocalDate startDate, LocalDate endDate );
+	 */ 
+    
     List<ExecutiveAttendance> 
-    findByExecutiveNameAndAttendanceDateBetweenOrderByAttendanceDateDesc(
-            String executiveName,
+    findByUserCodeAndAttendanceDateBetweenOrderByAttendanceDateDesc(
+            String userCode,
             LocalDate startDate,
             LocalDate endDate
     );

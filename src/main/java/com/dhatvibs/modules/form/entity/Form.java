@@ -102,7 +102,17 @@ private WorkflowStatus workflowStatus;
 private Long managerId;
 private String managerName;
 
-private LocalDateTime resendApprovedDate;
+private LocalDateTime resendApprovedDate;  
+
+private String vendorMessage;  //added
+
+
+
+//added
+//Vendor onboarding follow-up
+private Boolean vendorReady;
+private Integer onboardInDays;
+private LocalDateTime onboardFollowupDate;
   
   }
  
