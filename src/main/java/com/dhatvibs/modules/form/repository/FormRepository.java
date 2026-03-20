@@ -102,7 +102,8 @@ import com.dhatvibs.modules.form.entity.WorkflowStatus;
   List<Form> findByExecutiveIdAndSolvedTrue(Long executiveId); 
   
   //List<Form> findByAssignedBpoIdAndSolvedFalse(Long assignedBpoId);//added
-  List<Form> findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(Long assignedBpoId);  //added
+  //List<Form> findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(Long assignedBpoId);  //added
+  List<Form> findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNullAndBpoActionDateIsNull(Long assignedBpoId);
   
   List<Form> findByAssignedBpoIdAndBpoActionDateIsNotNull(Long assignedBpoId);  //added
   

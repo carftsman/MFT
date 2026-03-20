@@ -126,7 +126,8 @@ public class BpoServiceImpl implements BpoService {
 	    // Step 1: check how many forms BPO already has
 	    List<Form> assignedForms =
 	          //  formRepository.findByAssignedBpoIdAndSolvedFalse(bpoId);
-	    		formRepository.findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(bpoId);
+	    	  //	formRepository.findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNull(bpoId);
+	    		formRepository.findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNullAndBpoActionDateIsNull(bpoId);
 	    
 
 	    int limit = 5;
@@ -309,7 +310,8 @@ public class BpoServiceImpl implements BpoService {
 	        form.setReappearDate(LocalDateTime.now().plusDays(2));
 
 	        // IMPORTANT: keep same BPO
-	        form.setAssignedBpoId(bpoId);
+	        form.setAssignedBpoId(bpoId); 
+	        form.setBpoActionDate(null);
 	    }
 
 	    //return mapToDto(formRepository.saveAndFlush(form)); 
