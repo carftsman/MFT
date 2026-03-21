@@ -50,7 +50,8 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                        // .allowedOrigins("http://localhost:3000")
-                        .allowedOrigins("http://localhost:3000","https://performance-dashboard-umber.vercel.app")
+                        //.allowedOrigins("http://localhost:3000","https://performance-dashboard-umber.vercel.app")
+                        .allowedOrigins("http://fieldconnect.dhatvibs.com","http://localhost:3000")
                         .allowCredentials(true)
                         .allowedMethods("*");
             }
