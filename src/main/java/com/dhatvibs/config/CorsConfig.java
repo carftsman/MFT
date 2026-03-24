@@ -52,7 +52,7 @@ public class CorsConfig {
                        // .allowedOrigins("http://localhost:3000")
                         //.allowedOrigins("http://localhost:3000","https://performance-dashboard-umber.vercel.app")
                         //.allowedOrigins("http://fieldconnect.dhatvibs.com","http://localhost:3000")
-                		.allowedOrigins("https://performance-dashboard-fe.onrender.com")
+                		.allowedOrigins("https://performance-dashboard-fe.onrender.com","http://localhost:3000")
                         .allowCredentials(true)
                         .allowedMethods("*");
             }
