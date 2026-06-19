@@ -15,4 +15,7 @@ public interface FormService {
     
     
     List<FormResponseDto> getMyForms(HttpSession session);
+    
+    List<FormResponseDto> getExecutiveForms();
+    
 }

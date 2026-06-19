@@ -3,6 +3,7 @@ package com.dhatvibs.modules.form.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,24 @@ public class FormController {
     public ResponseEntity<List<FormResponseDto>> getMyHistory(HttpSession session) {
         return ResponseEntity.ok(formService.getMyForms(session));
     }
+    
+    
+    @GetMapping("/executive-forms")
+    public ResponseEntity<List<FormResponseDto>> getExecutiveForms(
+            HttpSession session) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (role == null ||
+            (!role.equalsIgnoreCase("MANAGER")
+             && !role.equalsIgnoreCase("REPORTER"))) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(
+                formService.getExecutiveForms());
+    }
+    
+    
 } 

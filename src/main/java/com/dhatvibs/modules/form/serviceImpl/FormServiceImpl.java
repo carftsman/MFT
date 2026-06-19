@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dhatvibs.modules.form.dto.FormRequestDto;
 import com.dhatvibs.modules.form.dto.FormResponseDto;
@@ -146,6 +147,17 @@ public class FormServiceImpl implements FormService {
         }
 
         return formRepository.findByExecutiveId(executiveId)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<FormResponseDto> getExecutiveForms() {
+
+        return formRepository.findExecutiveForms()
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
