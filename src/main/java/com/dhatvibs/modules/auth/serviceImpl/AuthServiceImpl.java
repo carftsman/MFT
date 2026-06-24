@@ -24,26 +24,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-	/*
-	 * @Override public AuthResponseDto activateUser(ActivateRequestDto request,HttpSession session) {
-	 * 
-	 * User user = userRepository.findByUserCode(request.getUserCode())
-	 * .orElseThrow(() -> new RuntimeException("Invalid User ID"));
-	 * 
-	 * if (user.getIsActivated()) { throw new
-	 * RuntimeException("User already activated"); }
-	 * 
-	 * if (!request.getPassword().equals(request.getConfirmPassword())) { throw new
-	 * RuntimeException("Passwords do not match"); }
-	 * 
-	 * user.setPassword(passwordEncoder.encode(request.getPassword()));
-	 * user.setIsActivated(true);
-	 * 
-	 * userRepository.save(user);
-	 * 
-	 * return new AuthResponseDto("Activation Successful", user.getUserCode(),
-	 * user.getRole().name()); }
-	 */
+	
     
     @Override
     public AuthResponseDto activateUser(ActivateRequestDto request, HttpSession session) {
@@ -89,44 +70,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-	/*
-	 * @Override public AuthResponseDto login(LoginRequestDto request) {
-	 * 
-	 * User user = userRepository.findByUserCode(request.getUserCode())
-	 * .orElseThrow(() -> new RuntimeException("Invalid User ID"));
-	 * 
-	 * if (!user.getIsActivated()) { throw new
-	 * RuntimeException("User not activated"); }
-	 * 
-	 * if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-	 * throw new RuntimeException("Invalid Password"); }
-	 * 
-	 * return new AuthResponseDto("Login Successful", user.getUserCode(),
-	 * user.getRole().name()); }
-	 */
-	/*
-	 * @Override public AuthResponseDto login(LoginRequestDto request, HttpSession
-	 * session) {
-	 * 
-	 * User user = userRepository.findByUserCode(request.getUserCode())
-	 * .orElseThrow(() -> new RuntimeException("Invalid User ID"));
-	 * 
-	 * if (!user.getIsActivated()) { throw new
-	 * RuntimeException("User not activated"); }
-	 * 
-	 * if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-	 * throw new RuntimeException("Invalid Password"); }
-	 * 
-	 * // ✅ CREATE SESSION & STORE VALUES session.setAttribute("userId",
-	 * user.getId()); session.setAttribute("role", user.getRole().name());
-	 * session.setAttribute("teamleadId", user.getTeamleadId());
-	 * session.setAttribute("userCode", user.getUserCode());
-	 * 
-	 * 
-	 * return new AuthResponseDto( "Login Successful", user.getUserCode(),
-	 * user.getRole().name() ); }
-	 */
-    
+	
     
     
     @Override
@@ -175,45 +119,10 @@ public class AuthServiceImpl implements AuthService {
     public void logout(HttpSession session) {
         session.invalidate();
     }  
+ 
     
     
-    
-	/*
-	 * @Override public String forgotPassword(String userCode) {
-	 * 
-	 * User user = userRepository.findByUserCode(userCode) .orElseThrow(() -> new
-	 * RuntimeException("User not found"));
-	 * 
-	 * String token = UUID.randomUUID().toString();
-	 * 
-	 * user.setResetToken(token);
-	 * user.setTokenExpiry(LocalDateTime.now().plusMinutes(10));
-	 * 
-	 * userRepository.save(user);
-	 * 
-	 * // In production send via email return "Reset Token: " + token; }
-	 */
-    
-    
-	/*
-	 * @Override public String resetPassword(ResetPasswordRequestDto request) {
-	 * 
-	 * User user = userRepository.findByResetToken(request.getToken())
-	 * .orElseThrow(() -> new RuntimeException("Invalid token"));
-	 * 
-	 * if (user.getTokenExpiry().isBefore(LocalDateTime.now())) { throw new
-	 * RuntimeException("Token expired"); }
-	 * 
-	 * if (!request.getNewPassword().equals(request.getConfirmPassword())) { throw
-	 * new RuntimeException("Passwords do not match"); }
-	 * 
-	 * user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-	 * user.setResetToken(null); user.setTokenExpiry(null);
-	 * 
-	 * userRepository.save(user);
-	 * 
-	 * return "Password Reset Successful"; }
-	 */  
+	 
     
     @Override
     public String forgotPassword(String userCode) {
