@@ -13,8 +13,13 @@ import com.dhatvibs.modules.executive.entity.ExecutiveAttendance;
 public interface ExecutiveAttendanceRepository 
         extends JpaRepository<ExecutiveAttendance, Long> {
 
-    Optional<ExecutiveAttendance> 
-    findByExecutiveIdAndAttendanceDate(Long executiveId, LocalDate attendanceDate); 
+	/*
+	 * Optional<ExecutiveAttendance> findByExecutiveIdAndAttendanceDate(Long
+	 * executiveId, LocalDate attendanceDate);
+	 */
+	
+	 List<ExecutiveAttendance> 
+	    findByExecutiveIdAndAttendanceDate(Long executiveId, LocalDate attendanceDate); 
     
 	/*
 	 * List<ExecutiveAttendance> findByExecutiveIdOrderByAttendanceDateDesc(Long

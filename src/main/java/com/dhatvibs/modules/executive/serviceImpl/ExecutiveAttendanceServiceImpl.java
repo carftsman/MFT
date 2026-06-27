@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dhatvibs.modules.executive.dto.ExecutiveAttendanceRequestDto;
 import com.dhatvibs.modules.executive.entity.ExecutiveAttendance;
@@ -22,6 +23,7 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
     private ExecutiveAttendanceRepository repository;
 
     @Override
+    @Transactional
     public String markAttendance(ExecutiveAttendanceRequestDto dto, HttpSession session) {
 
         Long executiveId = (Long) session.getAttribute("userId");
@@ -36,10 +38,19 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
 
         LocalDate today = LocalDate.now();
 
-        Optional<ExecutiveAttendance> existing =
+		/*
+		 * Optional<ExecutiveAttendance> existing =
+		 * repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
+		 * 
+		 * if (existing.isPresent()) { return "Attendance already marked for today"; }
+		 * 
+		 * 
+		 */
+        
+        List<ExecutiveAttendance> existing =
                 repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
 
-        if (existing.isPresent()) {
+        if (!existing.isEmpty()) {
             return "Attendance already marked for today";
         }
 
@@ -70,10 +81,17 @@ public class ExecutiveAttendanceServiceImpl implements ExecutiveAttendanceServic
 
         LocalDate today = LocalDate.now();
 
-        Optional<ExecutiveAttendance> existing =
+		/*
+		 * Optional<ExecutiveAttendance> existing =
+		 * repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
+		 * 
+		 * return existing.isPresent();
+		 */
+        
+        List<ExecutiveAttendance> existing =
                 repository.findByExecutiveIdAndAttendanceDate(executiveId, today);
 
-        return existing.isPresent();
+        return !existing.isEmpty();
     }  
     
     @Override
