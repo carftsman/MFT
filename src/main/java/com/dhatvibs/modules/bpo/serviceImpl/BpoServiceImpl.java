@@ -130,7 +130,7 @@ public class BpoServiceImpl implements BpoService {
 	    		formRepository.findByAssignedBpoIdAndSolvedFalseAndReappearDateIsNullAndBpoActionDateIsNull(bpoId);
 	    
 
-	    int limit = 5;
+	    int limit = 10;
 
 	    if (assignedForms.size() < limit) {
 
