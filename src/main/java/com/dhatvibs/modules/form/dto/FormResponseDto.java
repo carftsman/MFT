@@ -60,4 +60,6 @@ public class FormResponseDto {
     
     
     private String vendorMessage;  //added
+    
+    private LocalDateTime bpoActionDate;
 }
